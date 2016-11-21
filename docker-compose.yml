@@ -1,0 +1,32 @@
+version: ‘2’
+
+services:
+
+  postgres:
+    restart: always
+    image: postgres:latest
+    volumes:
+      - data_postgres:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+
+  nginx:
+    restart: always
+    build: ./nginx/
+    ports:
+      - "5000:80"
+
+  backend:
+    restart: always
+    build: ./backend
+    expose:
+      - "5000"
+    depends_on:
+      - postgres
+      - nginx
+    command: uwsgi_python27 --http-socket=:5000 --pp=/opt --wsgi-file=backend/app.py --callable=app
+
+volumes:
+  data_postgres:
+    external:
+      name: external_data_postgres
