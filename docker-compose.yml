@@ -1,4 +1,4 @@
-version: ‘2’
+version: "2"
 
 services:
 
@@ -14,19 +14,18 @@ services:
     restart: always
     build: ./nginx/
     ports:
-      - "5000:80"
+      - "80:8000"
+    expose:
+      - "8000"
 
   backend:
     restart: always
     build: ./backend
-    expose:
-      - "5000"
     depends_on:
       - postgres
       - nginx
-    command: uwsgi_python27 --http-socket=:5000 --pp=/opt --wsgi-file=backend/app.py --callable=app
+    command: uwsgi --http-socket=:8000 --pp=/usr/src/app/backend --wsgi-file=app.py --callable=application --master
 
 volumes:
   data_postgres:
-    external:
-      name: external_data_postgres
+    external: false
