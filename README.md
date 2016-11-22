@@ -1,7 +1,7 @@
 # Tornado-app
 Fun project on top of cool technologies.
 
-## Techonologies
+## Technologies
 
 * [Python 2.7.12](https://www.python.org/)
 * [Tornado](http://www.tornadoweb.org/en/stable/index.html)
