@@ -1,14 +1,18 @@
-import tornado.web
 import tornado.wsgi
 import wsgiref.simple_server
 
+from utils import base
 
-class MainHandler(tornado.web.RequestHandler):
+
+class MainHandler(base.BaseHandler):
     def get(self):
         self.write("Hello, world")
 
+    def post(self):
+        pass
 
-application = tornado.web.Application([
+
+application = base.Application([
     (r"/", MainHandler),
 ])
 wsgi_app = tornado.wsgi.WSGIAdapter(application)
