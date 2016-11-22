@@ -15,8 +15,6 @@ services:
     build: ./nginx/
     ports:
       - "80:80"
-    expose:
-      - "8000"
 
   backend:
     restart: always
