@@ -3,6 +3,8 @@ version: "2"
 services:
 
   postgres:
+    env_file:
+      - env
     restart: always
     image: postgres:latest
     volumes:
@@ -17,6 +19,8 @@ services:
       - "80:80"
 
   backend:
+    env_file:
+      - env
     restart: always
     build: ./backend
     depends_on:
