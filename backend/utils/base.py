@@ -1,10 +1,16 @@
+import json
+
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import scoped_session
 from tornado import web
+from tornado.options import define
 
 import models
 import settings
+
+
+define("port", default=8000, help="run on the given port", type=int)
 
 
 class Application(web.Application):
@@ -23,3 +29,9 @@ class BaseHandler(web.RequestHandler):
     @property
     def db(self):
         return self.application.db
+
+    def send_response(self, data, status=200):
+        json_data = json.dumps(data)
+        self.write(json_data)
+        self.set_status(status)
+        self.set_header('Content-Type', 'application/json')
