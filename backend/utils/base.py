@@ -12,7 +12,9 @@ class Application(web.Application):
         configs = {'debug': settings.DEBUG,
                    'xsrf_cookies': True}
         web.Application.__init__(self, handlers, **configs)
-        engine = sqlalchemy.create_engine(settings.SQLALCHEMY_URL)
+        engine = sqlalchemy.create_engine(settings.SQLALCHEMY_URL,
+                                          convert_unicode=True,
+                                          echo=settings.DEBUG)
         models.init_db(engine)
         self.db = scoped_session(sessionmaker(bind=engine))
 

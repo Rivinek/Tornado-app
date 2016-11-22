@@ -2,7 +2,7 @@ version: "2"
 
 services:
 
-  postgres:
+  postgresapp:
     env_file:
       - env
     restart: always
@@ -24,7 +24,7 @@ services:
     restart: always
     build: ./backend
     depends_on:
-      - postgres
+      - postgresapp
       - nginx
     command: uwsgi --http-socket=:8000 --pp=/usr/src/app --wsgi-file=app.py --callable=wsgi_app --master
 
