@@ -3,21 +3,17 @@ import json
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import scoped_session
-from tornado import web
-from tornado.options import define
+import tornado.web
 
 import models
 import settings
 
 
-define("port", default=8000, help="run on the given port", type=int)
-
-
-class Application(web.Application):
+class Application(tornado.web.Application):
     def __init__(self, handlers):
         configs = {'debug': settings.DEBUG,
-                   'xsrf_cookies': True}
-        web.Application.__init__(self, handlers, **configs)
+                   'xsrf_cookies': False}
+        tornado.web.Application.__init__(self, handlers, **configs)
         engine = sqlalchemy.create_engine(settings.SQLALCHEMY_URL,
                                           convert_unicode=True,
                                           echo=settings.DEBUG)
@@ -25,7 +21,7 @@ class Application(web.Application):
         self.db = scoped_session(sessionmaker(bind=engine))
 
 
-class BaseHandler(web.RequestHandler):
+class BaseHandler(tornado.web.RequestHandler):
     @property
     def db(self):
         return self.application.db
