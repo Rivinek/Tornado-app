@@ -17,8 +17,16 @@ Fun project on top of cool technologies.
 ├── backend
 │   ├── Dockerfile
 │   ├── app.py
-│   └── requirements.txt
+│   ├── models.py
+│   ├── requirements.txt
+│   ├── settings.py
+│   └── utils
+│       ├── __init__.py
+│       ├── base.py
+│       └── db_config.py
 ├── docker-compose.yml
+├── env
+├── env.base
 └── nginx
     ├── Dockerfile
     └── sites-enabled
