@@ -1,8 +1,11 @@
 import datetime
 
 import sqlalchemy
-from sqlalchemy import orm
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import scoped_session
+
+import settings
 
 
 Base = declarative_base()
@@ -10,6 +13,14 @@ Base = declarative_base()
 
 def init_db(engine):
     Base.metadata.create_all(bind=engine)
+
+
+def create_session():
+    engine = sqlalchemy.create_engine(settings.SQLALCHEMY_URL,
+                                      convert_unicode=True,
+                                      echo=settings.DEBUG)
+    init_db(engine)
+    return scoped_session(sessionmaker(bind=engine))
 
 
 class UserRequest(Base):

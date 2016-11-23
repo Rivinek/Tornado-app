@@ -1,8 +1,5 @@
 import json
 
-import sqlalchemy
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm import scoped_session
 import tornado.web
 
 import models
@@ -14,11 +11,7 @@ class Application(tornado.web.Application):
         configs = {'debug': settings.DEBUG,
                    'xsrf_cookies': False}
         tornado.web.Application.__init__(self, handlers, **configs)
-        engine = sqlalchemy.create_engine(settings.SQLALCHEMY_URL,
-                                          convert_unicode=True,
-                                          echo=settings.DEBUG)
-        models.init_db(engine)
-        self.db = scoped_session(sessionmaker(bind=engine))
+        self.db = models.create_session()
 
 
 class BaseHandler(tornado.web.RequestHandler):
