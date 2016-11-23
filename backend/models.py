@@ -1,6 +1,7 @@
 import datetime
 
 import sqlalchemy
+from sqlalchemy import orm
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -26,4 +27,6 @@ class DateDifference(Base):
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
     difference = sqlalchemy.Column(sqlalchemy.Float)
-    user_request = sqlalchemy.Column(sqlalchemy.ForeignKey('userrequest.id'))
+    user_request_id = sqlalchemy.Column(
+        sqlalchemy.Integer,
+        sqlalchemy.ForeignKey(UserRequest.id, ondelete='CASCADE'))
