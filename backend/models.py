@@ -23,7 +23,20 @@ def create_session():
     return scoped_session(sessionmaker(bind=engine))
 
 
-class UserRequest(Base):
+class BaseModel():
+    @classmethod
+    def get_or_create(cls, session, **kwargs):
+        instance = session.query(cls).filter_by(**kwargs).first()
+        if instance:
+            return instance
+        else:
+            instance = cls(**kwargs)
+            session.add(instance)
+            session.commit()
+            return instance
+
+
+class UserRequest(BaseModel, Base):
     __tablename__ = 'userrequest'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
@@ -32,8 +45,15 @@ class UserRequest(Base):
                                    default=datetime.datetime.utcnow)
     ip = sqlalchemy.Column(sqlalchemy.String)
 
+    def average_difference(self, session):
+        all_differences = session.query(DateDifference).filter(
+            DateDifference.user_request_id==self.id).all()
+        difference_count = sum([difference.difference
+                                for difference in all_differences])
+        return difference_count / len(all_differences)
 
-class DateDifference(Base):
+
+class DateDifference(BaseModel, Base):
     __tablename__ = 'datedifference'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)

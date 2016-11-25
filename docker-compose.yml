@@ -16,7 +16,7 @@ services:
     restart: always
     build: ./nginx/
     ports:
-      - "80:80"
+      - "8080:80"
 
   backend:
     env_file:
@@ -30,8 +30,8 @@ services:
     depends_on:
       - postgresapp
       - nginx
-    entrypoint: ./scripts/wait-for-it.sh postgressapp:5432
-    command: uwsgi --http-socket=:8000 --pp=/usr/src/app --wsgi-file=app.py --callable=wsgi_app --master
+    entrypoint: ./scripts/wait-for-it.sh
+    command: uwsgi --http :8000 --pp /usr/src/app --wsgi-file app.py --callable wsgi_app --master
 
 volumes:
   data_postgres:

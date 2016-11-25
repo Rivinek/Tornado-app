@@ -17,10 +17,9 @@ class MainHandler(base.BaseHandler):
         str_date = json.loads(self.request.body)['result']
         client_ip = self.request.headers.get("X-Real-IP")
         date_now = datetime.datetime.now()
-        user_request = models.UserRequest(result=date_now, ip=client_ip)
-        self.db.add(user_request)
-        self.db.flush()
-
+        user_request = models.UserRequest.get_or_create(self.db,
+                                                        ip=client_ip)
+        response_data = {'request': date_now.isoformat()}
         if str_date:
             given_date = dateutil.parser.parse(str_date)
             difference_value = (date_now - given_date).total_seconds()
@@ -28,8 +27,12 @@ class MainHandler(base.BaseHandler):
                 user_request_id=user_request.id,
                 difference=difference_value)
             self.db.add(date_difference)
-        self.db.commit()
-        self.send_response({'ok': 'ok'}, status=201)
+            self.db.commit()
+            average_difference = user_request.average_difference(self.db)
+            response_data['difference'] = {'result': difference_value}
+            response_data['average_difference'] = average_difference
+
+        self.send_response(response_data, status=201)
 
 
 application = base.Application([
