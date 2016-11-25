@@ -1,6 +1,5 @@
 import datetime
 import dateutil.parser
-import json
 
 import tornado.wsgi
 import wsgiref.simple_server
@@ -11,18 +10,18 @@ from utils import base
 
 class MainHandler(base.BaseHandler):
     def get(self):
-        self.write("Hello, world")
+        self.write("Ok")
 
-    def post(self):
-        str_date = json.loads(self.request.body)['result']
+    @base.param(name='result', _type=dateutil.parser.parse, default=None)
+    def post(self, *args, **kwargs):
+        date = kwargs['result']
         client_ip = self.request.headers.get("X-Real-IP")
         date_now = datetime.datetime.now()
         user_request = models.UserRequest.get_or_create(self.db,
                                                         ip=client_ip)
         response_data = {'request': date_now.isoformat()}
-        if str_date:
-            given_date = dateutil.parser.parse(str_date)
-            difference_value = (date_now - given_date).total_seconds()
+        if date:
+            difference_value = (date_now - date).total_seconds()
             date_difference = models.DateDifference(
                 user_request_id=user_request.id,
                 difference=difference_value)

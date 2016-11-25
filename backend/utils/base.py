@@ -24,3 +24,16 @@ class BaseHandler(tornado.web.RequestHandler):
         self.write(json_data)
         self.set_status(status)
         self.set_header('Content-Type', 'application/json')
+
+
+def param(name, _type, default=None):
+    def wrap(func):
+        def wrapped(self, *args, **kwargs):
+            try:
+                param = _type(json.loads(self.request.body)[name])
+            except ValueError:
+                param = default
+            kwargs[name] = param
+            return func(self, *args, **kwargs)
+        return wrapped
+    return wrap
